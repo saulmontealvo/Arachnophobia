@@ -1,0 +1,17 @@
+{
+  "FusionImport": {
+    "scope": "lua",
+    "prefix": "importf",
+    "body": [
+      "local Fusion = require(game.ReplicatedStorage.Modules.Fusion)",
+      "local New,Children,OnEvent,State,Spring,Computed,Tween = Fusion.New,Fusion.Children,Fusion.OnEvent,Fusion.State,Fusion.Spring,Fusion.Computed,Fusion.Tween"
+    ],
+    "description": "Add Fusion to script"
+  },
+  "FusionComponent": {
+    "scope": "lua",
+    "prefix": "componentf",
+    "body": ["local function e(props)", "\treturn", "end", "", "return e"],
+    "description": "Make a fusion component"
+  }
+}

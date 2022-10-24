@@ -1,0 +1,24 @@
+{
+  "name": "Arachnophobia",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "Common": {
+        "$path": "shared"
+      }
+    },
+
+    "ServerScriptService": {
+      "Server": {
+        "$path": "server"
+      }
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$path": "Lobby"
+      }
+    }
+  }
+}
