@@ -34,7 +34,7 @@ local LongInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.
 -- UI
 
 -- Apply or setup or init
-Fliter:ApplyFilter("Vintage")
+Fliter:ApplyFilter("Realistic")
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
