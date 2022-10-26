@@ -1,5 +1,5 @@
 {
-  "name": "Arachnophobia-Lobby",
+  "name": "Arachnophobia-Game",
   "tree": {
     "$className": "DataModel",
 
@@ -11,13 +11,13 @@
 
     "ServerScriptService": {
       "Server": {
-        "$path": "server/Lobby"
+        "$path": "server/Game"
       }
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
-        "$path": "client/Lobby"
+        "$path": "client/Game"
       }
     }
   }

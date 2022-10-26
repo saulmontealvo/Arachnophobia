@@ -1,13 +1,16 @@
+-- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local LocalizationService = game:GetService("LocalizationService")
 local player = Players.LocalPlayer
 
 -- Packages
 local Fusion = require(ReplicatedStorage.Common.Packages.Fusion)
 local Fusion = require(ReplicatedStorage.Common.Packages.Fusion)
-local New, Children, OnEvent, Value, Spring, Computed, Tween =
-	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.Value, Fusion.Spring, Fusion.Computed, Fusion.Tween
+local New, Children, OnEvent, Value, Spring, Computed, Tween, Ref =
+	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.Value, Fusion.Spring, Fusion.Computed, Fusion.Tween, Fusion.Ref
 local Fliter = require(ReplicatedStorage.Common.Utils.Fliter)
+local DeviceChecker = require(ReplicatedStorage.Common.Utils.DeviceChecker)
 
 --[[
     Date: 10/24/2022
@@ -21,9 +24,32 @@ local Fliter = require(ReplicatedStorage.Common.Utils.Fliter)
 -- UI
 local Padding = require(ReplicatedStorage.Common.UI.Utils.Padding)
 local Button = require(ReplicatedStorage.Common.UI.Button)
+local Frame = require(ReplicatedStorage.Common.UI.ItemFrame)
 -- Main
 
 Fliter:ApplyFilter("Vintage")
+
+local mul = 1.8
+
+local x = 0.375
+local y = 0.500
+
+local m = x * mul
+local n = y * mul
+
+local CountyCode = LocalizationService:GetCountryRegionForPlayerAsync(player)
+local Size = Value(UDim2.fromScale(x, y))
+
+-- warn(m, n)
+
+if not DeviceChecker.isComputer() then
+	Size:set(UDim2.fromScale(m, n))
+end
+
+local Folder = Value()
+
+local GameFrame = Value()
+local SettingsFrame = Value()
 
 local GUI = New("ScreenGui")({
 	Name = "Select",
@@ -38,10 +64,41 @@ local GUI = New("ScreenGui")({
 			BackgroundTransparency = 0.2,
 			BorderSizePixel = 0,
 			Position = UDim2.fromScale(0.5, 0.5),
-			Size = UDim2.fromScale(0.313, 0.417),
+			Size = Size,
 			ZIndex = 2,
 
 			[Children] = {
+				New("Folder")({
+					Name = "Frames",
+					[Ref] = Folder,
+					[Children] = {
+						Frame({
+							Name = "Game",
+							[Ref] = GameFrame,
+							[Children] = {
+								New("TextButton")({
+									Name = "Hello",
+									Size = UDim2.fromOffset(200, 50),
+									Text = "Click to play",
+									[OnEvent("MouseButton1Click")] = function()
+										game:GetService("TeleportService"):Teleport(11371061130)
+									end,
+								}),
+							},
+						}),
+						Frame({
+							Name = "Settings",
+							[Ref] = SettingsFrame,
+							[Children] = {
+								New("TextLabel")({
+									Name = "Text",
+									Size = UDim2.fromOffset(200, 50),
+									Text = "Settings",
+								}),
+							},
+						}),
+					},
+				}),
 				New("UIAspectRatioConstraint")({
 					Name = "UIAspectRatioConstraint",
 					AspectRatio = 1.33,
@@ -65,22 +122,24 @@ local GUI = New("ScreenGui")({
 					ZIndex = 2,
 
 					[Children] = {
-						Button({
-							Text = "Games",
-						}),
-
 						New("UIListLayout")({
 							Name = "UIListLayout",
-							Padding = UDim.new(0, 3),
+							Padding = UDim.new(0, 5),
 							SortOrder = Enum.SortOrder.LayoutOrder,
+							VerticalAlignment = Enum.VerticalAlignment.Top,
 						}),
-
-						New("UIPadding")({
-							Name = "UIPadding",
-							PaddingBottom = UDim.new(0, 5),
-							PaddingLeft = UDim.new(0, 5),
-							PaddingRight = UDim.new(0, 5),
-							PaddingTop = UDim.new(0, 5),
+						Padding({
+							Number = 5,
+						}),
+						Button({
+							Text = "Games",
+							Frame = Folder,
+							Item = GameFrame,
+						}),
+						Button({
+							Text = "Settings",
+							Frame = Folder,
+							Item = SettingsFrame,
 						}),
 					},
 				}),
