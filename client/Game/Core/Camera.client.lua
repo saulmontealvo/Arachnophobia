@@ -70,5 +70,5 @@ local function toggle(actionName, inputStat)
 end
 
 ContextActionService:BindAction(Action, toggle, true, Enum.KeyCode.B)
-ContextActionService:SetImage(Action, "rbxassetid://10723376471")
-ContextActionService:SetPosition(Action, UDim2.fromOffset(10, 30))
+ContextActionService:SetImage(Action, "rbxassetid://10709789686")
+ContextActionService:SetPosition(Action, UDim2.fromOffset(40, 40))

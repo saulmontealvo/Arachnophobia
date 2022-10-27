@@ -42,4 +42,4 @@ end
 
 ContextActionService:BindAction(Action, toggle, true, Enum.KeyCode.F)
 ContextActionService:SetImage(Action, "rbxassetid://10723376471")
-ContextActionService:SetPosition(Action, UDim2.fromOffset(10, 20))
+ContextActionService:SetPosition(Action, UDim2.fromOffset(80, 20))

@@ -16,9 +16,9 @@ local DeviceChecker = require(ReplicatedStorage.Common.Utils.DeviceChecker)
     Date: 10/24/2022
     Time: 16:30:17
 
-    Path: Lobby\Main.client.lua
+	Path: client\Lobby\Main.client.lua
 
-    Script made by Gamerboy72008
+	Script made by Gamerboy72008
 ]]
 
 -- UI

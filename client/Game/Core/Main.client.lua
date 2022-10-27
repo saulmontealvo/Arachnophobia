@@ -40,15 +40,20 @@ StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
 
+if not game:GetService("RunService"):IsStudio() then
+	player.CameraMode = Enum.CameraMode.LockFirstPerson
+end
+
 -- UI Start
 
 -- Fusion Values
 local SizeIcon = Value(UDim2.fromScale(0.183, 0.0477))
-local Transparency = Value(1)
-local Background = Value(0)
-local Text = Value(1)
-local Label = Value(1)
-local Frame = Value()
+local Transparency = Value(1) -- Milk Icon background
+local Background = Value(0) -- Main Frame
+local Text = Value(1) -- Milk Text
+local Label = Value(1) -- Milk's Studio being you GameName
+local Frame = Value() -- Ref
+local Headphone = Value(1) -- Headphones
 
 local GUI = New("ScreenGui")({
 	Name = "TitleScreen",
@@ -106,10 +111,52 @@ local GUI = New("ScreenGui")({
 					),
 					Size = UDim2.fromScale(1, 0.0463),
 				}),
+				New("TextLabel")({
+					Name = "Headphone",
+					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
+					Text = "Rememeber to wear headphones",
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextScaled = true,
+					TextSize = 14,
+					TextWrapped = true,
+					AnchorPoint = Vector2.new(0.5, 0),
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					Position = UDim2.fromScale(0.5, 0.825),
+					TextTransparency = Tween(
+						Headphone,
+						TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+					),
+					Size = UDim2.fromScale(1, 0.0463),
+				}),
+				New("ImageLabel")({
+					Name = "ImageLabel",
+					Image = "rbxassetid://11390622596",
+					AnchorPoint = Vector2.new(0.5, 0),
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					Position = UDim2.fromScale(0.5, 0.713),
+					Size = UDim2.fromScale(0.025, 0.0444),
+					ImageTransparency = Tween(
+						Headphone,
+						TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+					),
+
+					[Children] = {
+						New("UIAspectRatioConstraint")({
+							Name = "UIAspectRatioConstraint",
+						}),
+					},
+				}),
 			},
 		}),
 	},
 })
+
+repeat
+	task.wait()
+until game:IsLoaded()
+
 Transparency:set(1)
 
 task.wait(2)
@@ -130,6 +177,14 @@ task.wait(1)
 
 Transparency:set(1)
 Text:set(1)
+task.wait(0.5)
 Label:set(1)
 
+task.wait(1)
+
+Headphone:set(0)
+
+task.wait(2)
+Headphone:set(1)
+task.wait(1)
 Background:set(1)
