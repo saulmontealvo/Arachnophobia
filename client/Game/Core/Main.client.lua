@@ -114,7 +114,7 @@ local GUI = New("ScreenGui")({
 				New("TextLabel")({
 					Name = "Headphone",
 					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
-					Text = "Rememeber to wear headphones",
+					Text = "Wear headphones for better gameplay",
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					TextScaled = true,
 					TextSize = 14,
@@ -188,3 +188,10 @@ task.wait(2)
 Headphone:set(1)
 task.wait(1)
 Background:set(1)
+
+local sound = Instance.new("Sound")
+sound.Name = "Sound"
+sound.Looped = true
+sound.SoundId = "rbxassetid://9103284660"
+
+ReplicatedStorage.Assets.Audio.RoomZero:Play()
