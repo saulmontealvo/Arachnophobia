@@ -34,7 +34,7 @@ local Camera = Hydrate(game.Workspace.CurrentCamera)({
 	FieldOfView = Tween(FovValue, TweenInfo.new(0.001, Enum.EasingStyle.Linear, Enum.EasingDirection.In)),
 })
 
-local max = 20
+local max = 10
 local camera = false
 
 local ActionNormal = "Sprint"
@@ -47,6 +47,39 @@ local LeftShift = true
 
 coroutine.resume(coroutine.create(function()
 	while true do
+		if Sprint then
+			if game:GetService("RunService"):IsStudio() then
+				warn(Number)
+			end
+			if Humanoid.MoveDirection.Magnitude > 0 then
+				Number = Number - 1
+				if Number < 1000 then
+					Humanoid.WalkSpeed = 17
+				end
+				if Number < 0 then
+					Humanoid.WalkSpeed = 16
+					Sprint = false
+					Number = 5700
+				end
+			end
+		end
+
+		if Humanoid.MoveDirection.Magnitude > 0 then
+		else
+			if Number < 5700 then
+				Number = Number + 1
+			end
+		end
+
+		if Number < 1000 then
+			Humanoid.WalkSpeed = 17
+		end
+
+		task.wait()
+	end
+end))
+coroutine.resume(coroutine.create(function()
+	game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
 		if camera then
 			if UserInputService:IsKeyDown(Enum.KeyCode.E) then
 				FovValue:set(FovValue:get() - 1)
@@ -62,21 +95,8 @@ coroutine.resume(coroutine.create(function()
 				end
 			end
 		end
-		if Sprint then
-			warn(Number)
-			Number = Number - 1
-			if Number < 1000 then
-				Humanoid.WalkSpeed = 17
-			end
-			if Number < 0 then
-				Humanoid.WalkSpeed = 16
-				Sprint = false
-				Number = 5700
-			end
-		end
-
-		task.wait()
-	end
+		task.wait(deltaTime * 300)
+	end)
 end))
 
 local function toggle(actionName, inputStat)
@@ -116,16 +136,20 @@ local function update(KeyCode, event)
 end
 
 local function zoom()
-	FovValue:set(FovValue:get() - 10)
-	if FovValue:get() < max then
-		FovValue:set(max)
+	if camera then
+		FovValue:set(FovValue:get() - 10)
+		if FovValue:get() < max then
+			FovValue:set(max)
+		end
 	end
 end
 
 local function zoomOut()
-	FovValue:set(FovValue:get() + 10)
-	if FovValue:get() > 70 then
-		FovValue:set(70)
+	if camera then
+		FovValue:set(FovValue:get() + 10)
+		if FovValue:get() > 70 then
+			FovValue:set(70)
+		end
 	end
 end
 
@@ -134,8 +158,12 @@ UserInputService.InputEnded:Connect(update)
 
 -- Zoom
 ContextActionService:BindAction("Zoom", zoom, true)
-ContextActionService:SetImage("Zoom", "")
+ContextActionService:SetImage("Zoom", "rbxassetid://10734924532")
 ContextActionService:SetPosition("Zoom", UDim2.fromOffset(165, -25))
+
+ContextActionService:BindAction("zoomOut", zoomOut, true)
+ContextActionService:SetImage("zoomOut", "rbxassetid://10734896206")
+ContextActionService:SetPosition("zoomOut", UDim2.fromOffset(165, -70))
 
 ContextActionService:BindAction(ActionNormal, toggleSprint, true)
 ContextActionService:SetImage(ActionNormal, "rbxassetid://10734920149")
