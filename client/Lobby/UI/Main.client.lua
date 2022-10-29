@@ -2,6 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalizationService = game:GetService("LocalizationService")
+local StarterPack = game:GetService("StarterPack")
 local player = Players.LocalPlayer
 
 -- Packages
@@ -55,73 +56,159 @@ local Folder = Value()
 local GameFrame = Value()
 local SettingsFrame = Value()
 
+local MainFrame = Value(true)
 local data = Value(ReplicatedStorage.Games:GetChildren())
 
-local bo = Computed(function()
-	local out = {}
-	for index, value in data:get() do
-		out[index] = New("Frame")({
-			Name = "Frame",
-			BackgroundColor3 = Color3.fromRGB(72, 144, 120),
-			Position = UDim2.fromScale(0.0147, 0.000189),
-			Size = UDim2.fromScale(0.993, 0.00157),
-			ZIndex = 2,
+-- local bo = Computed(function()
+-- 	local out = {}
+-- 	for index, value in data:get() do
+-- 		out[index] = New("Frame")({
+-- 			Name = "Frame",
+-- 			BackgroundColor3 = Color3.fromRGB(72, 144, 120),
+-- 			Position = UDim2.fromScale(0.0147, 0.000189),
+-- 			Size = UDim2.fromScale(0.993, 0.00157),
+-- 			ZIndex = 2,
 
-			[Children] = {
-				New("TextLabel")({
-					Name = "TextLabel",
-					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
-					Text = value.Players.Value,
-					TextColor3 = Color3.fromRGB(255, 255, 255),
-					TextScaled = true,
-					TextSize = 14,
-					TextWrapped = true,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					Position = UDim2.fromScale(0, 0.0476),
-					Size = UDim2.fromScale(0.631, 0.88),
-					ZIndex = 2,
-				}),
+-- 			[Children] = {
+-- 				New("TextLabel")({
+-- 					Name = "TextLabel",
+-- 					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
+-- 					Text = value.Name .. "'s game " .. value.Count.Value .. "/4",
+-- 					TextColor3 = Color3.fromRGB(255, 255, 255),
+-- 					TextScaled = true,
+-- 					TextSize = 14,
+-- 					TextWrapped = true,
+-- 					TextXAlignment = Enum.TextXAlignment.Left,
+-- 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+-- 					BackgroundTransparency = 1,
+-- 					Position = UDim2.fromScale(0, 0.0476),
+-- 					Size = UDim2.fromScale(0.631, 0.88),
+-- 					ZIndex = 2,
+-- 				}),
 
-				New("UIPadding")({
-					Name = "UIPadding",
-					PaddingBottom = UDim.new(0, 2),
-					PaddingLeft = UDim.new(0, 2),
-					PaddingRight = UDim.new(0, 2),
-					PaddingTop = UDim.new(0, 2),
-				}),
+-- 				New("UIPadding")({
+-- 					Name = "UIPadding",
+-- 					PaddingBottom = UDim.new(0, 2),
+-- 					PaddingLeft = UDim.new(0, 2),
+-- 					PaddingRight = UDim.new(0, 2),
+-- 					PaddingTop = UDim.new(0, 2),
+-- 				}),
 
-				New("TextButton")({
-					Name = "TextButton",
-					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
-					Text = "Join",
-					TextColor3 = Color3.fromRGB(255, 255, 255),
-					TextScaled = true,
-					TextSize = 14,
-					TextWrapped = true,
-					BackgroundColor3 = Color3.fromRGB(48, 184, 168),
-					Position = UDim2.fromScale(0.8, 0.0476),
-					Size = UDim2.fromScale(0.133, 0.88),
-					ZIndex = 2,
+-- 				New("TextButton")({
+-- 					Name = "TextButton",
+-- 					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
+-- 					Text = "Join",
+-- 					TextColor3 = Color3.fromRGB(255, 255, 255),
+-- 					TextScaled = true,
+-- 					TextSize = 14,
+-- 					TextWrapped = true,
+-- 					BackgroundColor3 = Color3.fromRGB(48, 184, 168),
+-- 					Position = UDim2.fromScale(0.8, 0.0476),
+-- 					Size = UDim2.fromScale(0.133, 0.88),
+-- 					ZIndex = 2,
 
-					[Children] = {
-						New("UICorner")({
-							Name = "UICorner",
-						}),
-					},
-				}),
+-- 					[Children] = {
+-- 						New("UICorner")({
+-- 							Name = "UICorner",
+-- 						}),
+-- 					},
+-- 					[OnEvent("MouseButton1Click")] = function()
+-- 						print("Click")
+-- 						MainFrame:set(false)
+-- 					end,
+-- 				}),
 
-				New("UICorner")({
-					Name = "UICorner",
-				}),
-			},
-		})
-	end
-	return out
+-- 				New("UICorner")({
+-- 					Name = "UICorner",
+-- 				}),
+-- 			},
+-- 		})
+-- 	end
+-- 	return out
+-- end)
+local bo = ForValues(data, function(value)
+	local Players = Value(value.Count.Value)
+
+	local EndMessage = Computed(function()
+		return value.Name .. "'s game " .. Players:get() .. "/4"
+	end)
+
+	value.Count.Changed:Connect(function(updateValue)
+		Players:set(updateValue)
+		print("Funny UwU")
+	end)
+
+	return New("Frame")({
+		Name = "Frame",
+		BackgroundColor3 = Color3.fromRGB(72, 144, 120),
+		Position = UDim2.fromScale(0.0147, 0.000189),
+		Size = UDim2.fromScale(0.993, 0.00157),
+		ZIndex = 2,
+
+		[Children] = {
+			New("TextLabel")({
+				Name = "TextLabel",
+				FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
+				Text = EndMessage,
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextScaled = true,
+				TextSize = 14,
+				TextWrapped = true,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+				BackgroundTransparency = 1,
+				Position = UDim2.fromScale(0, 0.0476),
+				Size = UDim2.fromScale(0.631, 0.88),
+				ZIndex = 2,
+			}),
+
+			New("UIPadding")({
+				Name = "UIPadding",
+				PaddingBottom = UDim.new(0, 2),
+				PaddingLeft = UDim.new(0, 2),
+				PaddingRight = UDim.new(0, 2),
+				PaddingTop = UDim.new(0, 2),
+			}),
+
+			New("TextButton")({
+				Name = "TextButton",
+				FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
+				Text = "Join",
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextScaled = true,
+				TextSize = 14,
+				TextWrapped = true,
+				BackgroundColor3 = Color3.fromRGB(48, 184, 168),
+				Position = UDim2.fromScale(0.8, 0.0476),
+				Size = UDim2.fromScale(0.133, 0.88),
+				ZIndex = 2,
+
+				[Children] = {
+					New("UICorner")({
+						Name = "UICorner",
+					}),
+				},
+				[OnEvent("MouseButton1Click")] = function()
+					print("Click")
+					MainFrame:set(false)
+				end,
+			}),
+
+			New("UICorner")({
+				Name = "UICorner",
+			}),
+		},
+	})
 end)
 
 local update = function()
+	-- ReplicatedStorage.Games.DescendantAdded:Connect(function(descendant)
+	-- 	data:set(ReplicatedStorage.Games:GetChildren())
+	-- end)
+
+	-- ReplicatedStorage.Games.DescendantRemoving:Connect(function(descendant)
+	-- 	data:set(ReplicatedStorage.Games:GetChildren())
+	-- end)
 	while true do
 		data:set(ReplicatedStorage.Games:GetChildren())
 		task.wait()
@@ -145,6 +232,7 @@ local GUI = New("ScreenGui")({
 			BorderSizePixel = 0,
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = Size,
+			Visible = MainFrame,
 			ZIndex = 2,
 
 			[Children] = {
