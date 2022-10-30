@@ -67,6 +67,7 @@ coroutine.resume(coroutine.create(function()
 		if Humanoid.MoveDirection.Magnitude > 0 then
 		else
 			if Number < 5700 then
+				print("add")
 				Number = Number + 1
 			end
 		end

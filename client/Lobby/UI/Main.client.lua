@@ -57,85 +57,19 @@ local GameFrame = Value()
 local SettingsFrame = Value()
 
 local MainFrame = Value(true)
+local JoinedFrame = Value(false)
+local render = Value()
+local playerList = Value()
 local data = Value(ReplicatedStorage.Games:GetChildren())
 
--- local bo = Computed(function()
--- 	local out = {}
--- 	for index, value in data:get() do
--- 		out[index] = New("Frame")({
--- 			Name = "Frame",
--- 			BackgroundColor3 = Color3.fromRGB(72, 144, 120),
--- 			Position = UDim2.fromScale(0.0147, 0.000189),
--- 			Size = UDim2.fromScale(0.993, 0.00157),
--- 			ZIndex = 2,
-
--- 			[Children] = {
--- 				New("TextLabel")({
--- 					Name = "TextLabel",
--- 					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
--- 					Text = value.Name .. "'s game " .. value.Count.Value .. "/4",
--- 					TextColor3 = Color3.fromRGB(255, 255, 255),
--- 					TextScaled = true,
--- 					TextSize = 14,
--- 					TextWrapped = true,
--- 					TextXAlignment = Enum.TextXAlignment.Left,
--- 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
--- 					BackgroundTransparency = 1,
--- 					Position = UDim2.fromScale(0, 0.0476),
--- 					Size = UDim2.fromScale(0.631, 0.88),
--- 					ZIndex = 2,
--- 				}),
-
--- 				New("UIPadding")({
--- 					Name = "UIPadding",
--- 					PaddingBottom = UDim.new(0, 2),
--- 					PaddingLeft = UDim.new(0, 2),
--- 					PaddingRight = UDim.new(0, 2),
--- 					PaddingTop = UDim.new(0, 2),
--- 				}),
-
--- 				New("TextButton")({
--- 					Name = "TextButton",
--- 					FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
--- 					Text = "Join",
--- 					TextColor3 = Color3.fromRGB(255, 255, 255),
--- 					TextScaled = true,
--- 					TextSize = 14,
--- 					TextWrapped = true,
--- 					BackgroundColor3 = Color3.fromRGB(48, 184, 168),
--- 					Position = UDim2.fromScale(0.8, 0.0476),
--- 					Size = UDim2.fromScale(0.133, 0.88),
--- 					ZIndex = 2,
-
--- 					[Children] = {
--- 						New("UICorner")({
--- 							Name = "UICorner",
--- 						}),
--- 					},
--- 					[OnEvent("MouseButton1Click")] = function()
--- 						print("Click")
--- 						MainFrame:set(false)
--- 					end,
--- 				}),
-
--- 				New("UICorner")({
--- 					Name = "UICorner",
--- 				}),
--- 			},
--- 		})
--- 	end
--- 	return out
--- end)
 local bo = ForValues(data, function(value)
 	local Players = Value(value.Count.Value)
-
 	local EndMessage = Computed(function()
 		return value.Name .. "'s game " .. Players:get() .. "/4"
 	end)
 
 	value.Count.Changed:Connect(function(updateValue)
 		Players:set(updateValue)
-		print("Funny UwU")
 	end)
 
 	return New("Frame")({
@@ -191,6 +125,9 @@ local bo = ForValues(data, function(value)
 				[OnEvent("MouseButton1Click")] = function()
 					print("Click")
 					MainFrame:set(false)
+					JoinedFrame:set(true)
+					render:set(value)
+					playerList:set(value.Players:GetChildren())
 				end,
 			}),
 
@@ -201,14 +138,18 @@ local bo = ForValues(data, function(value)
 	})
 end)
 
-local update = function()
-	-- ReplicatedStorage.Games.DescendantAdded:Connect(function(descendant)
-	-- 	data:set(ReplicatedStorage.Games:GetChildren())
-	-- end)
+local playerImages = Computed(function()
+	local out = {}
+	for index, playerValue in playerList:get() do
+		out[index] = New("ImageLabel")({
+			Size = UDim2.new(0, 100, 0, 100),
+			Name = playerValue.Name,
+		})
+	end
+	return out
+end)
 
-	-- ReplicatedStorage.Games.DescendantRemoving:Connect(function(descendant)
-	-- 	data:set(ReplicatedStorage.Games:GetChildren())
-	-- end)
+local update = function()
 	while true do
 		data:set(ReplicatedStorage.Games:GetChildren())
 		task.wait()
@@ -224,7 +165,7 @@ local GUI = New("ScreenGui")({
 	Parent = player.PlayerGui,
 
 	[Children] = {
-		New("Frame")({
+		New("Frame")({ -- MainFrame
 			Name = "Frame",
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundColor3 = Color3.fromRGB(40, 48, 48),
@@ -311,7 +252,7 @@ local GUI = New("ScreenGui")({
 					Thickness = 2,
 				}),
 
-				New("Frame")({
+				New("Frame")({ -- List of buttons
 					Name = "Frame",
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 					BackgroundTransparency = 1,
@@ -339,6 +280,35 @@ local GUI = New("ScreenGui")({
 							Item = SettingsFrame,
 						}),
 					},
+				}),
+			},
+		}),
+
+		New("Frame")({
+			Name = "GameInfo",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundColor3 = Color3.fromRGB(40, 48, 48),
+			BackgroundTransparency = 0.2,
+			BorderSizePixel = 0,
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = Size,
+			Visible = JoinedFrame,
+			ZIndex = 2,
+
+			[Children] = {
+				New("UIAspectRatioConstraint")({
+					Name = "UIAspectRatioConstraint",
+					AspectRatio = 1.33,
+				}),
+
+				Padding({
+					Number = 5,
+				}),
+
+				New("UIStroke")({
+					Name = "UIStroke",
+					Color = Color3.fromRGB(16, 80, 72),
+					Thickness = 2,
 				}),
 			},
 		}),
