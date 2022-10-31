@@ -56,11 +56,31 @@ local Folder = Value()
 local GameFrame = Value()
 local SettingsFrame = Value()
 
+local thumbType = Enum.ThumbnailType.HeadShot
+local thumbSize = Enum.ThumbnailSize.Size100x100
+
 local MainFrame = Value(true)
 local JoinedFrame = Value(false)
-local render = Value()
+local render = Value(ReplicatedStorage.Assets.PlayerList:GetChildren())
 local playerList = Value()
+local ListFrame = Value()
 local data = Value(ReplicatedStorage.Games:GetChildren())
+
+local PlayerOne = Value(0)
+local PlayerTwo = Value(0)
+local PlayerThere = Value(0)
+local PlayerFour = Value(0)
+
+local function userIdImage(id: number)
+	if id ~= nil then
+		if id == 0 then
+			return "http://www.roblox.com/asset/?id=2539402051"
+		end
+		return Players:GetUserThumbnailAsync(id, thumbType, thumbSize)
+	else
+		return "http://www.roblox.com/asset/?id=2539402051"
+	end
+end
 
 local bo = ForValues(data, function(value)
 	local Players = Value(value.Count.Value)
@@ -96,12 +116,8 @@ local bo = ForValues(data, function(value)
 				ZIndex = 2,
 			}),
 
-			New("UIPadding")({
-				Name = "UIPadding",
-				PaddingBottom = UDim.new(0, 2),
-				PaddingLeft = UDim.new(0, 2),
-				PaddingRight = UDim.new(0, 2),
-				PaddingTop = UDim.new(0, 2),
+			Padding({
+				Number = 2,
 			}),
 
 			New("TextButton")({
@@ -124,10 +140,12 @@ local bo = ForValues(data, function(value)
 				},
 				[OnEvent("MouseButton1Click")] = function()
 					print("Click")
+
+					ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("AskToJoin"):FireServer(value)
+					render:set(value.Players:GetChildren())
+					playerList:set(value.Players:GetChildren())
 					MainFrame:set(false)
 					JoinedFrame:set(true)
-					render:set(value)
-					playerList:set(value.Players:GetChildren())
 				end,
 			}),
 
@@ -138,20 +156,14 @@ local bo = ForValues(data, function(value)
 	})
 end)
 
-local playerImages = Computed(function()
-	local out = {}
-	for index, playerValue in playerList:get() do
-		out[index] = New("ImageLabel")({
-			Size = UDim2.new(0, 100, 0, 100),
-			Name = playerValue.Name,
-		})
-	end
-	return out
-end)
-
 local update = function()
 	while true do
 		data:set(ReplicatedStorage.Games:GetChildren())
+		local Folder = render:get()
+
+		for index, value in Folder do
+			print(index, value)
+		end
 		task.wait()
 	end
 end
@@ -309,6 +321,104 @@ local GUI = New("ScreenGui")({
 					Name = "UIStroke",
 					Color = Color3.fromRGB(16, 80, 72),
 					Thickness = 2,
+				}),
+				New("Frame")({
+					Name = "Frame",
+					[Ref] = ListFrame,
+					AnchorPoint = Vector2.new(0.5, 0),
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					Position = UDim2.fromScale(0.5, 0),
+					Size = UDim2.fromScale(0.708, 0.185),
+					ZIndex = 2,
+
+					[Children] = {
+						New("UIPadding")({
+							Name = "UIPadding",
+							PaddingBottom = UDim.new(0, 3),
+							PaddingLeft = UDim.new(0, 3),
+							PaddingRight = UDim.new(0, 3),
+							PaddingTop = UDim.new(0, 3),
+						}),
+
+						New("UIListLayout")({
+							Name = "UIListLayout",
+							Padding = UDim.new(0, 4),
+							FillDirection = Enum.FillDirection.Horizontal,
+							HorizontalAlignment = Enum.HorizontalAlignment.Center,
+							SortOrder = Enum.SortOrder.LayoutOrder,
+							VerticalAlignment = Enum.VerticalAlignment.Center,
+						}),
+
+						New("ImageLabel")({
+							BackgroundTransparency = 1,
+							Size = UDim2.fromScale(0.186, 0.983),
+							Name = "Image",
+							Image = Computed(function()
+								return userIdImage(PlayerOne:get())
+							end),
+							[Children] = {
+								New("UIAspectRatioConstraint")({
+									Name = "UIAspectRatioConstraint",
+								}),
+
+								New("UICorner")({
+									Name = "UICorner",
+								}),
+							},
+						}),
+						New("ImageLabel")({
+							BackgroundTransparency = 1,
+							Size = UDim2.fromScale(0.186, 0.983),
+							Name = "Image",
+							Image = Computed(function()
+								return userIdImage(PlayerTwo:get())
+							end),
+							[Children] = {
+								New("UIAspectRatioConstraint")({
+									Name = "UIAspectRatioConstraint",
+								}),
+
+								New("UICorner")({
+									Name = "UICorner",
+								}),
+							},
+						}),
+						New("ImageLabel")({
+							BackgroundTransparency = 1,
+							Size = UDim2.fromScale(0.186, 0.983),
+							Name = "Image",
+							Image = Computed(function()
+								return userIdImage(PlayerThere:get())
+							end),
+							[Children] = {
+								New("UIAspectRatioConstraint")({
+									Name = "UIAspectRatioConstraint",
+								}),
+
+								New("UICorner")({
+									Name = "UICorner",
+								}),
+							},
+						}),
+						New("ImageLabel")({
+							BackgroundTransparency = 1,
+							Size = UDim2.fromScale(0.186, 0.983),
+							Name = "Image",
+							Image = Computed(function()
+								return userIdImage(PlayerFour:get())
+							end),
+							[Children] = {
+								New("UIAspectRatioConstraint")({
+									Name = "UIAspectRatioConstraint",
+								}),
+
+								New("UICorner")({
+									Name = "UICorner",
+								}),
+							},
+						}),
+					},
 				}),
 			},
 		}),
