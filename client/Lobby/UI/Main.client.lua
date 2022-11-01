@@ -65,6 +65,7 @@ local render = Value(ReplicatedStorage.Assets.PlayerList:GetChildren())
 local playerList = Value()
 local ListFrame = Value()
 local data = Value(ReplicatedStorage.Games:GetChildren())
+local ListData
 
 local PlayerOne = Value(0)
 local PlayerTwo = Value(0)
@@ -74,10 +75,13 @@ local PlayerFour = Value(0)
 local function userIdImage(id: number)
 	if id ~= nil then
 		if id == 0 then
+			print("UserId is 0")
 			return "http://www.roblox.com/asset/?id=2539402051"
 		end
+		print("Normal output")
 		return Players:GetUserThumbnailAsync(id, thumbType, thumbSize)
 	else
+		print("No valueAdded")
 		return "http://www.roblox.com/asset/?id=2539402051"
 	end
 end
@@ -140,10 +144,15 @@ local bo = ForValues(data, function(value)
 				},
 				[OnEvent("MouseButton1Click")] = function()
 					print("Click")
+					ListData = {
+						["One"] = value.Players.One,
+						["Two"] = value.Players.Two,
+						["Three"] = value.Players.Three,
+						["Four"] = value.Players.Four,
+					}
 
 					ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("AskToJoin"):FireServer(value)
-					render:set(value.Players:GetChildren())
-					playerList:set(value.Players:GetChildren())
+					playerList:set(value.Players)
 					MainFrame:set(false)
 					JoinedFrame:set(true)
 				end,
@@ -156,20 +165,47 @@ local bo = ForValues(data, function(value)
 	})
 end)
 
+local run = function()
+	-- PlayerOne:set(render:get()["One"].Value)
+	-- PlayerTwo:set(render:get()["Two"].Value)
+	-- PlayerThere:set(render:get()["Three"].Value)
+	-- PlayerFour:set(render:get()["Four"].Value)
+	print("HI")
+end
+
+local a, b, c, d
+
 local update = function()
 	while true do
 		data:set(ReplicatedStorage.Games:GetChildren())
-		local Folder = render:get()
+		task.wait()
+	end
+end
 
-		for index, value in Folder do
-			print(index, value)
+local playerLuis = function()
+	while true do
+		if ListData then
+			a = ListData["One"].Value
+			b = ListData["Two"].Value
+			c = ListData["Three"].Value
+			d = ListData["Four"].Value
+
+			PlayerOne:set(a)
+			PlayerTwo:set(b)
+			PlayerThere:set(c)
+			PlayerFour:set(d)
+
+			task.wait()
 		end
 		task.wait()
 	end
 end
 
-local co = coroutine.create(update)
-coroutine.resume(co)
+-- Update to playerList alos PlayerLuis lol
+coroutine.resume(coroutine.create(playerLuis))
+
+-- Update to GameList
+coroutine.resume(coroutine.create(update))
 
 local GUI = New("ScreenGui")({
 	Name = "Select",
@@ -419,6 +455,15 @@ local GUI = New("ScreenGui")({
 							},
 						}),
 					},
+				}),
+				SimpleButton({
+					Position = UDim2.fromScale(0.5, 0.309),
+					Size = UDim2.fromScale(0.113, 0.0757),
+					Text = "Start",
+					AnchorPoint = Vector2.new(0.5, 0),
+					Function = function()
+						game.ReplicatedStorage.Remotes.StartGame:FireServer()
+					end,
 				}),
 			},
 		}),

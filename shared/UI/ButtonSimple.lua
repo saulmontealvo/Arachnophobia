@@ -21,9 +21,15 @@ local info = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In
 local function e(props)
 	local stroke = Value(1)
 	local bool = true
+	local vec = Value(Vector2.new(0, 0))
+
+	if props.AnchorPoint then
+		vec:set(props.AnchorPoint)
+	end
 
 	local UI = New("TextButton")({
 		Name = "TextButton",
+		AnchorPoint = vec,
 		FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json"),
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextScaled = true,
