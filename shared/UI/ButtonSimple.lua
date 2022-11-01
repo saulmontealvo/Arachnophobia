@@ -22,9 +22,14 @@ local function e(props)
 	local stroke = Value(1)
 	local bool = true
 	local vec = Value(Vector2.new(0, 0))
+	local vis = Value(true)
 
 	if props.AnchorPoint then
 		vec:set(props.AnchorPoint)
+	end
+
+	if props.Visible then
+		vis:set(props.Visible)
 	end
 
 	local UI = New("TextButton")({
@@ -38,6 +43,7 @@ local function e(props)
 		BackgroundColor3 = Color3.fromRGB(72, 128, 112),
 		BorderSizePixel = 0,
 		Size = props.Size,
+		Visible = vis,
 		Position = props.Position,
 
 		ZIndex = 2,

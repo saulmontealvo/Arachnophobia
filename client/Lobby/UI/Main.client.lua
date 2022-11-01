@@ -61,9 +61,10 @@ local thumbSize = Enum.ThumbnailSize.Size100x100
 
 local MainFrame = Value(true)
 local JoinedFrame = Value(false)
-local render = Value(ReplicatedStorage.Assets.PlayerList:GetChildren())
+local render = Value()
 local playerList = Value()
 local ListFrame = Value()
+local enabledButton = Value(false)
 local data = Value(ReplicatedStorage.Games:GetChildren())
 local ListData
 
@@ -143,13 +144,15 @@ local bo = ForValues(data, function(value)
 					}),
 				},
 				[OnEvent("MouseButton1Click")] = function()
-					print("Click")
 					ListData = {
 						["One"] = value.Players.One,
 						["Two"] = value.Players.Two,
 						["Three"] = value.Players.Three,
 						["Four"] = value.Players.Four,
 					}
+					if value.Name == player.Name then
+						enabledButton:set(true)
+					end
 
 					ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("AskToJoin"):FireServer(value)
 					playerList:set(value.Players)
@@ -201,7 +204,7 @@ local playerLuis = function()
 	end
 end
 
--- Update to playerList alos PlayerLuis lol
+-- Update to playerList also PlayerLuis lol
 coroutine.resume(coroutine.create(playerLuis))
 
 -- Update to GameList
@@ -457,6 +460,7 @@ local GUI = New("ScreenGui")({
 					},
 				}),
 				SimpleButton({
+					Visible = enabledButton,
 					Position = UDim2.fromScale(0.5, 0.309),
 					Size = UDim2.fromScale(0.113, 0.0757),
 					Text = "Start",

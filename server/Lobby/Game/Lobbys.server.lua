@@ -98,4 +98,4 @@ StartGame.OnServerEvent:Connect(function(player: Player)
 end)
 
 Players.PlayerRemoving:Connect(removePlayers)
-ReplicatedStorage.Remotes.TestEvent.OnServerEvent:Connect(removePlayers)
+-- ReplicatedStorage.Remotes.TestEvent.OnServerEvent:Connect(removePlayers)
