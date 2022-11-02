@@ -36,6 +36,8 @@ local Camera = Hydrate(game.Workspace.CurrentCamera)({
 
 local max = 10
 local camera = false
+local SprintSpeed = 24
+local WalkSpeed = 16
 
 local ActionNormal = "Sprint"
 local Sprint = false
@@ -43,6 +45,7 @@ local Sprint = false
 local Character = player.Character or player.CharacterAdded:Wait()
 local Humanoid: Humanoid = Character:WaitForChild("Humanoid")
 local Number = 5700
+local CanRun = true
 local LeftShift = true
 
 coroutine.resume(coroutine.create(function()
@@ -60,6 +63,9 @@ coroutine.resume(coroutine.create(function()
 					Humanoid.WalkSpeed = 16
 					Sprint = false
 					Number = 5700
+					CanRun = false
+					task.wait(2)
+					CanRun = true
 				end
 			end
 		end
@@ -67,7 +73,6 @@ coroutine.resume(coroutine.create(function()
 		if Humanoid.MoveDirection.Magnitude > 0 then
 		else
 			if Number < 5700 then
-				print("add")
 				Number = Number + 1
 			end
 		end
@@ -111,14 +116,16 @@ local function toggle(actionName, inputStat)
 	end
 end
 
+local function MuteMusic() end
+
 local function toggleSprint(actionName, inputStat)
 	LeftShift = false
 	if inputStat == Enum.UserInputState.Begin then
 		if Sprint == false then
-			Humanoid.WalkSpeed = 20
+			Humanoid.WalkSpeed = SprintSpeed
 			Sprint = true
 		else
-			Humanoid.WalkSpeed = 16
+			Humanoid.WalkSpeed = WalkSpeed
 			Sprint = false
 		end
 	end
@@ -126,12 +133,14 @@ end
 
 local function update(KeyCode, event)
 	if LeftShift then
-		if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-			Humanoid.WalkSpeed = 20
-			Sprint = true
-		else
-			Sprint = false
-			Humanoid.WalkSpeed = 16
+		if CanRun then
+			if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+				Humanoid.WalkSpeed = SprintSpeed
+				Sprint = true
+			else
+				Sprint = false
+				Humanoid.WalkSpeed = WalkSpeed
+			end
 		end
 	end
 end

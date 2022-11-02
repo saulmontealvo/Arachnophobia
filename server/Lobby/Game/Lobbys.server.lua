@@ -25,18 +25,14 @@ local list = {
 
 local function removePlayers(player: Player)
 	for index, value in pairs(ReplicatedStorage.Games:GetDescendants()) do
-		print(index, value)
 		if value:IsA("IntValue") then
-			print(value)
 			if value.Value == player.UserId then
-				print(value)
-				print("Gone")
 				value.Value = 0
-			else
-				print("Nothing")
-				print(value.Value, player.UserId)
 			end
 		end
+	end
+
+	if ReplicatedStorage.Games:FindFirstChild(ReplicatedStorage.Games:FindFirstChild(player.Name)) then
 	end
 end
 

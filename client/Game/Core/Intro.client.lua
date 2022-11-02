@@ -195,3 +195,6 @@ sound.Looped = true
 sound.SoundId = "rbxassetid://9103284660"
 
 ReplicatedStorage.Assets.Audio.RoomZero:Play()
+ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("StopAudio").OnClientEvent:Connect(function()
+	ReplicatedStorage:WaitForChild("Assets"):WaitForChild("Audio"):WaitForChild("RoomZero"):Stop()
+end)

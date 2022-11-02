@@ -30,9 +30,13 @@ local Padding = require(ReplicatedStorage.Common.UI.Utils.Padding)
 local Button = require(ReplicatedStorage.Common.UI.Button)
 local Frame = require(ReplicatedStorage.Common.UI.ItemFrame)
 local SimpleButton = require(ReplicatedStorage.Common.UI.ButtonSimple)
+local ListButton = require(ReplicatedStorage.Common.UI.Menu.ListButton)
+local ScrollingFrame = require(ReplicatedStorage.Common.UI.Menu.ScrollingFrame)
+local FrameGame = require(ReplicatedStorage.Common.UI.Menu.FrameGame)
 -- Main
 
 Fliter:ApplyFilter("Vintage")
+ReplicatedStorage:WaitForChild("Assets"):WaitForChild("Audio"):WaitForChild("Menu"):Play()
 
 local mul = 1.8
 
@@ -61,9 +65,8 @@ local thumbSize = Enum.ThumbnailSize.Size100x100
 
 local MainFrame = Value(true)
 local JoinedFrame = Value(false)
-local render = Value()
-local playerList = Value()
 local ListFrame = Value()
+local playerList
 local enabledButton = Value(false)
 local data = Value(ReplicatedStorage.Games:GetChildren())
 local ListData
@@ -87,6 +90,14 @@ local function userIdImage(id: number)
 	end
 end
 
+local function playerRemoved(folder: Folder)
+	if folder.Name == playerList.Name then
+		MainFrame:set(true)
+		JoinedFrame:set(false)
+		ListData = nil
+		playerList = nil
+	end
+end
 local bo = ForValues(data, function(value)
 	local Players = Value(value.Count.Value)
 	local EndMessage = Computed(function()
@@ -153,9 +164,8 @@ local bo = ForValues(data, function(value)
 					if value.Name == player.Name then
 						enabledButton:set(true)
 					end
-
+					playerList = value
 					ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("AskToJoin"):FireServer(value)
-					playerList:set(value.Players)
 					MainFrame:set(false)
 					JoinedFrame:set(true)
 				end,
@@ -216,17 +226,9 @@ local GUI = New("ScreenGui")({
 	Parent = player.PlayerGui,
 
 	[Children] = {
-		New("Frame")({ -- MainFrame
-			Name = "Frame",
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundColor3 = Color3.fromRGB(40, 48, 48),
-			BackgroundTransparency = 0.2,
-			BorderSizePixel = 0,
-			Position = UDim2.fromScale(0.5, 0.5),
+		FrameGame({
 			Size = Size,
 			Visible = MainFrame,
-			ZIndex = 2,
-
 			[Children] = {
 				New("Folder")({
 					Name = "Frames",
@@ -236,33 +238,9 @@ local GUI = New("ScreenGui")({
 							Name = "Game",
 							[Ref] = GameFrame,
 							[Children] = {
-								New("ScrollingFrame")({
-									Name = "ScrollingFrame",
-									CanvasSize = UDim2.fromScale(0, 30),
-									ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0),
-									Active = true,
-									BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-									BackgroundTransparency = 1,
-									BorderSizePixel = 0,
-									Position = UDim2.fromScale(0, 5.76e-08),
-									Size = UDim2.fromScale(1, 0.84),
-									ZIndex = 2,
+								ScrollingFrame({
 									[Children] = {
-										New("Frame")({
-											BackgroundTransparency = 1,
-											Size = UDim2.new(1, 0, 1, 0),
-											[Children] = {
-												Padding({
-													Number = 2,
-												}),
-												New("UIListLayout")({
-													Name = "UIListLayout",
-													Padding = UDim.new(0, 2),
-													SortOrder = Enum.SortOrder.LayoutOrder,
-												}),
-												bo,
-											},
-										}),
+										bo,
 									},
 								}),
 								SimpleButton({
@@ -303,23 +281,8 @@ local GUI = New("ScreenGui")({
 					Thickness = 2,
 				}),
 
-				New("Frame")({ -- List of buttons
-					Name = "Frame",
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					Size = UDim2.fromScale(0.198, 1),
-					ZIndex = 2,
-
+				ListButton({
 					[Children] = {
-						New("UIListLayout")({
-							Name = "UIListLayout",
-							Padding = UDim.new(0, 5),
-							SortOrder = Enum.SortOrder.LayoutOrder,
-							VerticalAlignment = Enum.VerticalAlignment.Top,
-						}),
-						Padding({
-							Number = 5,
-						}),
 						Button({
 							Text = "Games",
 							Frame = Folder,
@@ -334,7 +297,6 @@ local GUI = New("ScreenGui")({
 				}),
 			},
 		}),
-
 		New("Frame")({
 			Name = "GameInfo",
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -372,6 +334,15 @@ local GUI = New("ScreenGui")({
 					ZIndex = 2,
 
 					[Children] = {
+						New("UIStroke")({
+							Name = "UIStroke",
+							Color = Color3.fromRGB(255, 255, 255),
+							Thickness = 2,
+						}),
+						New("UICorner")({
+							Name = "UICorner",
+							CornerRadius = UDim.new(0, 10),
+						}),
 						New("UIPadding")({
 							Name = "UIPadding",
 							PaddingBottom = UDim.new(0, 3),
@@ -489,3 +460,5 @@ local GUI = New("ScreenGui")({
 		}),
 	},
 })
+
+ReplicatedStorage.Games.ChildRemoved:Connect(playerRemoved)

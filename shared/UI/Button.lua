@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Fusion = require(ReplicatedStorage.Common.Packages.Fusion)
-local New, Children, OnEvent, Value, Spring, Computed, Tween =
-	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.Value, Fusion.Spring, Fusion.Computed, Fusion.Tween
+local New, Children, OnEvent, Value, Spring, Computed, Tween, Ref =
+	Fusion.New, Fusion.Children, Fusion.OnEvent, Fusion.Value, Fusion.Spring, Fusion.Computed, Fusion.Tween, Fusion.Ref
 local Padding = require(ReplicatedStorage.Common.UI.Utils.Padding)
 local MouseOverModule =
 	require(ReplicatedStorage:WaitForChild("Common"):WaitForChild("Utils"):WaitForChild("MouseEvent"))
@@ -68,6 +68,8 @@ local function e(props)
 		-- end,
 		[OnEvent("MouseButton1Click")] = function()
 			Click:Play()
+
+			print()
 
 			for i, v in pairs(props.Frame:get():GetChildren()) do
 				if v:IsA("Frame") then
