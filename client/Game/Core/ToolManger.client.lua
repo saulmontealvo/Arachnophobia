@@ -6,6 +6,8 @@ local Character = Player.Character or Player.CharacterAdded:Wait()
 local Humanoid: Humanoid = Character:WaitForChild("Humanoid")
 local Animator = Humanoid:WaitForChild("Animator")
 local ContextActionService = game:GetService("ContextActionService")
+local Tools = ReplicatedStorage.Remotes.Tool
+local EquipTool = Tools.EquipTool
 local Idle
 local item = true
 local de = false
@@ -26,7 +28,7 @@ local Light = Tool.Light
 local function toggle(actionName, inputStat)
 	if inputStat == Enum.UserInputState.Begin then
 		if item == true then -- Add
-			Humanoid:EquipTool(Tool)
+			EquipTool:FireServer(Tool)
 			Idle = Animator:LoadAnimation(ReplicatedStorage.Assets.Animation.Idle)
 			Idle:Play()
 			item = false
